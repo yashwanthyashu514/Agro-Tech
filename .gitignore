@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+*.log
+
+# FastAPI / Uvicorn
+*.pid
+
+# ML Models (large binary files – add back selectively if needed)
+*.pkl
+*.h5
+*.pt
+*.pth
+*.onnx
+*.joblib
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/build/
+.npm
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+*.csv
+*.zip
+*.tar.gz

@@ -1,0 +1,29 @@
+{
+  "id": "raithanna",
+  "name": "ರೈತಣ್ಣ (Raithanna) - AI Farmer Assistant",
+  "version": "1.0.0",
+  "author": "AgroTech Karnataka Intelligence Team",
+  "description": "Complete bilingual (Kannada + English) end-to-end AI chatbot for Karnataka farmers with photo plant disease analysis, voice speech conversation, document analysis, mandi rates, and government schemes.",
+  "capabilities": [
+    "chat",
+    "voice_speech",
+    "photo_disease_diagnosis",
+    "document_file_analysis",
+    "mandi_rates",
+    "govt_schemes",
+    "fertilizer_guide",
+    "weather_advisory"
+  ],
+  "default_language": "kn",
+  "supported_languages": ["kn", "en", "kanglish"],
+  "routes": {
+    "chat": "/chat",
+    "analyze_photo": "/analyze-photo",
+    "voice": "/voice",
+    "upload_file": "/upload-file",
+    "quick_actions": "/quick-actions",
+    "mandi": "/mandi-rates",
+    "schemes": "/schemes",
+    "status": "/status"
+  }
+}
