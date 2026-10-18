@@ -10,13 +10,9 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from fastapi import FastAPI
 
-try:
-    from app.config import API_PREFIX
-except ModuleNotFoundError:
-    import sys as _sys
-    from pathlib import Path as _Path
-    _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "backend"))
-    from app.config import API_PREFIX
+# API prefix — mirrors backend/app/config.py so the plugin package
+# stays independent of the backend package at import time.
+API_PREFIX = "/api/v1"
 from plugin.base import BasePlugin
 
 logger = logging.getLogger(__name__)
