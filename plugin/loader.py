@@ -7,10 +7,16 @@ import importlib
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 from fastapi import FastAPI
 
-from app.config import API_PREFIX
+try:
+    from app.config import API_PREFIX
+except ModuleNotFoundError:
+    import sys as _sys
+    from pathlib import Path as _Path
+    _sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "backend"))
+    from app.config import API_PREFIX
 from plugin.base import BasePlugin
 
 logger = logging.getLogger(__name__)

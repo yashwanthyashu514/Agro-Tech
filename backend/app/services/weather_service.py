@@ -28,7 +28,7 @@ if str(_WEATHER_MODULE_DIR) not in sys.path:
 
 def _import_forecast():
     try:
-        from train_karnataka_weather_model import forecast, features_one, pred_reg
+        from train_karnataka_weather_model import forecast, features_one, pred_reg  # type: ignore[import]  # noqa: E402
         return forecast, features_one, pred_reg
     except ImportError as e:
         logger.error("Cannot import weather forecast module: %s", e)

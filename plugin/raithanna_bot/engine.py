@@ -5,8 +5,11 @@ Supports Kannada, English, and transliterated Kanglish.
 """
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 from plugin.raithanna_bot.knowledge_base import (
     SCHEMES_DATA, MANDI_RATES_DATA, DISEASE_REMEDIES

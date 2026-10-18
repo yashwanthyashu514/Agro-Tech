@@ -1,4 +1,4 @@
-﻿"""
+"""
 Retrain all AgroTech models with the currently installed library versions
 and save to backend/models_store/  for production use.
 
@@ -12,7 +12,7 @@ import joblib, numpy as np, pandas as pd
 warnings.filterwarnings("ignore")
 
 # â”€â”€ paths â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-DATA = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AgroTech_All_5_Modules", "AgroTech_All_5_Modules"))
+DATA = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AgroTech_All_5_Modules"))
 OUT  = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "backend", "models_store"))
 os.makedirs(OUT, exist_ok=True)
 
