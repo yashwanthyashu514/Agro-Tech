@@ -5,10 +5,34 @@ import { api } from '../utils/api';
 const HORIZONS = [7, 15, 30, 45, 60];
 
 const RISK_CONFIG = {
-  'High': { bg: 'rgba(239, 68, 68, 0.12)', border: 'rgba(239, 68, 68, 0.35)', color: '#f87171', icon: '🌧️' },
-  'Moderate': { bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.35)', color: '#fbbf24', icon: '🌦️' },
-  'Low': { bg: 'rgba(34, 197, 94, 0.1)', border: 'rgba(34, 197, 94, 0.25)', color: '#4ade80', icon: '☀️' },
+  'High':     { bg: 'rgba(239,68,68,0.12)',   border: 'rgba(239,68,68,0.35)',    color: '#f87171', icon: '🌧️', label: 'High Rain' },
+  'Moderate': { bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.35)',   color: '#fbbf24', icon: '🌦️', label: 'Moderate' },
+  'Low':      { bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.25)',    color: '#4ade80', icon: '☀️', label: 'Low Risk' },
 };
+
+function KPICard({ label, value, sub, icon, color }) {
+  return (
+    <div className="card" style={{
+      padding: '1.5rem',
+      border: `1px solid ${color}25`,
+      background: `linear-gradient(135deg, ${color}0a 0%, rgba(22,32,25,0.9) 100%)`,
+      position: 'relative', overflow: 'hidden',
+    }}>
+      <div style={{
+        position: 'absolute', top: '-20px', right: '-10px',
+        fontSize: '4rem', opacity: 0.07, userSelect: 'none',
+        lineHeight: 1,
+      }}>{icon}</div>
+      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
+        {label}
+      </div>
+      <div style={{ fontSize: '2rem', fontWeight: 900, color, lineHeight: 1.1, marginBottom: '0.35rem' }}>
+        {value}
+      </div>
+      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{sub}</div>
+    </div>
+  );
+}
 
 export function WeatherPage() {
   const districts = useDistricts();
@@ -41,188 +65,268 @@ export function WeatherPage() {
   const dayList = forecast?.days || [];
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem 4rem' }}>
-      
-      {/* Page Header */}
-      <div style={{ marginBottom: '2.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-          <span className="badge badge-sky">Module 3 · Time-Series ML</span>
-          <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>34-Year Climate Reanalysis · Karnataka IMD</span>
-        </div>
-        <h1 style={{ fontSize: '2.2rem', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em' }}>
-          District Agro-Weather Forecasting
-        </h1>
-        <p style={{ margin: 0, fontSize: '1.05rem', color: 'var(--text-secondary)', maxWidth: '750px', lineHeight: 1.5 }}>
-          Multi-horizon rainfall probability and temperature predictions calibrated specifically for agricultural dry-spell
-          and irrigation management.
-        </p>
-      </div>
+    <div style={{ overflow: 'hidden' }}>
+      {/* ─── Page Hero ─── */}
+      <section style={{
+        position: 'relative',
+        padding: '4rem 0 3rem',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: 'url(/agriculture.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 20%',
+          opacity: 0.06,
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'radial-gradient(ellipse 70% 60% at 50% 0%, rgba(14,165,233,0.15) 0%, transparent 70%)',
+        }} />
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, transparent 60%, var(--bg-base) 100%)',
+        }} />
 
-      {/* Control Bar */}
-      <div className="card glass-card" style={{ padding: '1.25rem 1.5rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'center' }}>
-          <div style={{ minWidth: '220px', flex: 1 }}>
-            <label className="form-label">Select Karnataka District</label>
-            <select
-              className="form-select"
-              value={district}
-              onChange={e => setDistrict(e.target.value)}
-            >
-              {districts.map(d => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
+        <div className="container" style={{ position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+            <span className="badge badge-sky">Module 3 · Time-Series ML</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>34-Year IMD Climate Reanalysis · 30 Karnataka Districts</span>
           </div>
-
-          <div>
-            <label className="form-label">Forecast Horizon</label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {HORIZONS.map(h => (
-                <button
-                  key={h}
-                  onClick={() => setDays(h)}
-                  className={`btn ${days === h ? 'btn-primary' : 'btn-ghost'}`}
-                  style={{ padding: '0.45rem 0.9rem', fontSize: '0.88rem' }}
-                >
-                  +{h} Days
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Loading & Error States */}
-      {loading && (
-        <div className="card glass-card" style={{ padding: '3rem', textAlign: 'center' }}>
-          <div className="spinner" style={{ width: 40, height: 40, margin: '0 auto 1rem', borderWidth: 3 }}></div>
-          <p style={{ margin: 0, color: 'var(--text-secondary)' }}>
-            Generating {days}-day predictive meteorological trajectory for {district}…
+          <h1 style={{
+            fontWeight: 900, marginBottom: '0.75rem',
+            background: 'linear-gradient(135deg, #e8f5e9 0%, #38bdf8 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>
+            District Agro-Weather Forecasting
+          </h1>
+          <p style={{ maxWidth: '680px', fontSize: '1.05rem', lineHeight: 1.6 }}>
+            Multi-horizon rainfall probability and temperature predictions calibrated specifically for
+            agricultural dry-spell identification and irrigation management.
           </p>
         </div>
-      )}
+      </section>
 
-      {error && (
-        <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.08)' }}>
-          <div style={{ color: '#fca5a5', fontWeight: 600 }}>Failed to fetch weather forecast</div>
-          <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>{error}</div>
-        </div>
-      )}
-
-      {/* Forecast Data Content */}
-      {!loading && forecast && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          
-          {/* Summary KPIs */}
-          <div className="grid-3">
-            <div className="card" style={{ padding: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Mean Rain Probability
-              </div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--sky-400)', marginTop: '0.3rem' }}>
-                {summary.avg_rain_probability_pct ?? 0}%
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                Calculated over next {days} days
-              </div>
+      {/* ─── Control Bar ─── */}
+      <div className="container" style={{ marginBottom: '2rem' }}>
+        <div className="card glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(56,189,248,0.2)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'flex-end' }}>
+            <div style={{ minWidth: '220px', flex: 1 }}>
+              <label className="form-label">📍 Karnataka District</label>
+              <select
+                className="form-select"
+                value={district}
+                onChange={e => setDistrict(e.target.value)}
+                style={{ borderColor: 'rgba(56,189,248,0.3)' }}
+              >
+                {districts.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
             </div>
 
-            <div className="card" style={{ padding: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Total Expected Rainfall
-              </div>
-              <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--sky-400)', marginTop: '0.3rem' }}>
-                {summary.total_expected_rain_mm ?? 0} <span style={{ fontSize: '1.2rem', fontWeight: 500 }}>mm</span>
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                High rain days: {summary.high_rain_risk_days ?? 0}
-              </div>
-            </div>
-
-            <div className="card" style={{ padding: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Agronomic Irrigation Advice
-              </div>
-              <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)', marginTop: '0.5rem', lineHeight: 1.5 }}>
-                {summary.irrigation_advisory || 'Soil moisture sufficient for standard cultivation.'}
-              </div>
-            </div>
-          </div>
-
-          {/* Daily Forecast Cards Grid */}
-          <div>
-            <div className="section-title">
-              <div className="icon">🌦️</div>
-              <div>
-                <h2 style={{ margin: 0 }}>{district} · Daily Outlook</h2>
-                <p style={{ margin: 0, fontSize: '0.85rem' }}>
-                  Horizon sequence starting from {forecast.forecast_from}
-                </p>
-              </div>
-            </div>
-
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-              gap: '1rem'
-            }}>
-              {dayList.map((d, i) => {
-                const conf = RISK_CONFIG[d.rain_risk] || RISK_CONFIG['Low'];
-                return (
-                  <div
-                    key={i}
-                    className="card"
+            <div>
+              <label className="form-label">📅 Forecast Horizon</label>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {HORIZONS.map(h => (
+                  <button
+                    key={h}
+                    onClick={() => setDays(h)}
                     style={{
-                      padding: '1rem 0.8rem',
-                      textAlign: 'center',
-                      background: conf.bg,
-                      border: `1px solid ${conf.border}`,
-                      transition: 'transform 0.15s ease',
+                      padding: '0.5rem 1rem',
+                      borderRadius: 'var(--radius-sm)',
+                      border: days === h ? '1px solid #38bdf8' : '1px solid var(--border)',
+                      background: days === h ? 'rgba(56,189,248,0.15)' : 'transparent',
+                      color: days === h ? '#38bdf8' : 'var(--text-secondary)',
+                      fontWeight: days === h ? 700 : 400,
+                      fontSize: '0.88rem',
+                      cursor: 'pointer',
+                      transition: 'var(--transition)',
                     }}
                   >
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
-                      {new Date(d.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', weekday: 'short' })}
-                    </div>
-                    <div style={{ fontSize: '1.8rem', margin: '0.4rem 0' }}>
-                      {conf.icon}
-                    </div>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: conf.color }}>
-                      {d.rain_probability_pct}%
-                    </div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                      Rain chance
-                    </div>
+                    +{h}d
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                    <div style={{ margin: '0.6rem 0', borderTop: '1px solid var(--border)', paddingTop: '0.4rem' }}>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--sky-400)' }}>
-                        {d.expected_rain_mm} mm
-                      </div>
-                      {d.temp_max_c && (
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                          {d.temp_min_c}° - {d.temp_max_c}°C
-                        </div>
-                      )}
-                    </div>
+            <button
+              className="btn"
+              onClick={() => fetchWeather(district, days)}
+              disabled={loading}
+              style={{
+                background: 'linear-gradient(135deg, rgba(14,165,233,0.8) 0%, rgba(22,163,74,0.8) 100%)',
+                color: '#fff',
+                border: 'none',
+                padding: '0.65rem 1.5rem',
+                boxShadow: '0 4px 20px rgba(14,165,233,0.3)',
+              }}
+            >
+              {loading ? '⏳ Loading…' : '🔄 Refresh'}
+            </button>
+          </div>
+        </div>
+      </div>
 
-                    <span
-                      className="badge"
+      <div className="container" style={{ paddingBottom: '4rem' }}>
+        {/* Loading */}
+        {loading && (
+          <div className="card glass-card" style={{ padding: '4rem', textAlign: 'center', border: '1px solid rgba(56,189,248,0.2)' }}>
+            <div className="spinner" style={{ width: 48, height: 48, margin: '0 auto 1.25rem', borderWidth: 3, borderColor: 'rgba(56,189,248,0.2)', borderTopColor: '#38bdf8' }} />
+            <p style={{ margin: 0, fontSize: '1rem', color: 'var(--text-secondary)' }}>
+              Generating {days}-day meteorological forecast for <strong style={{ color: '#38bdf8' }}>{district}</strong>…
+            </p>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && !loading && (
+          <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(239,68,68,0.35)', background: 'rgba(239,68,68,0.06)' }}>
+            <div style={{ color: '#fca5a5', fontWeight: 700, marginBottom: '0.25rem' }}>⚠️ Failed to fetch weather forecast</div>
+            <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>{error}</div>
+          </div>
+        )}
+
+        {/* Forecast data */}
+        {!loading && forecast && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+            {/* KPI Row */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '1.25rem',
+            }}>
+              <KPICard
+                label="Mean Rain Probability"
+                value={`${summary.avg_rain_probability_pct ?? 0}%`}
+                sub={`Averaged over next ${days} days`}
+                icon="🌧️"
+                color="#38bdf8"
+              />
+              <KPICard
+                label="Total Expected Rainfall"
+                value={`${summary.total_expected_rain_mm ?? 0} mm`}
+                sub={`${summary.rainy_days_forecast ?? 0} rainy days forecast`}
+                icon="💧"
+                color="#60a5fa"
+              />
+              <KPICard
+                label="Avg Max Temperature"
+                value={summary.avg_temp_max_c ? `${summary.avg_temp_max_c}°C` : '—'}
+                sub="Average daily high"
+                icon="🌡️"
+                color="#fbbf24"
+              />
+              <KPICard
+                label="Irrigation Advisory"
+                value={summary.irrigation_advisory?.split('—')[0]?.trim() || 'Monitor'}
+                sub={summary.irrigation_advisory || 'Keep monitoring soil moisture.'}
+                icon="🚿"
+                color="#4ade80"
+              />
+            </div>
+
+            {/* Daily grid */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <div style={{
+                  width: 40, height: 40,
+                  background: 'rgba(56,189,248,0.15)',
+                  border: '1px solid rgba(56,189,248,0.3)',
+                  borderRadius: 'var(--radius-sm)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '1.2rem',
+                }}>🌦️</div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: '1.3rem' }}>{district} · {days}-Day Outlook</h2>
+                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                    Starting {forecast.forecast_from}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+                gap: '0.85rem',
+              }}>
+                {dayList.map((d, i) => {
+                  const conf = RISK_CONFIG[d.rain_risk] || RISK_CONFIG['Low'];
+                  const dateStr = new Date(d.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+                  const weekday = new Date(d.date).toLocaleDateString('en-IN', { weekday: 'short' });
+                  return (
+                    <div
+                      key={i}
+                      className="card"
                       style={{
-                        background: conf.border,
-                        color: conf.color,
-                        fontSize: '0.68rem',
-                        padding: '0.2rem 0.5rem'
+                        padding: '1rem 0.85rem',
+                        textAlign: 'center',
+                        background: conf.bg,
+                        border: `1px solid ${conf.border}`,
+                        cursor: 'default',
+                        animation: 'fadeIn 0.4s ease forwards',
+                        animationDelay: `${i * 0.02}s`,
+                        opacity: 0,
                       }}
                     >
-                      {d.rain_risk} Risk
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                      {/* Date */}
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                        {weekday}
+                      </div>
+                      <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
+                        {dateStr}
+                      </div>
 
-        </div>
-      )}
+                      {/* Icon */}
+                      <div style={{ fontSize: '2rem', margin: '0.3rem 0' }}>{conf.icon}</div>
+
+                      {/* Rain % */}
+                      <div style={{ fontSize: '1.3rem', fontWeight: 900, color: conf.color, lineHeight: 1 }}>
+                        {d.rain_probability_pct}%
+                      </div>
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>rain prob.</div>
+
+                      {/* Divider */}
+                      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.5rem', marginBottom: '0.5rem' }}>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#60a5fa' }}>
+                          {d.expected_rain_mm} mm
+                        </div>
+                        {d.temp_max_c && (
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                            {d.temp_min_c}° – {d.temp_max_c}°C
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Badge */}
+                      <span style={{
+                        display: 'inline-block',
+                        padding: '0.15rem 0.5rem',
+                        background: conf.border,
+                        color: conf.color,
+                        borderRadius: '999px',
+                        fontSize: '0.65rem',
+                        fontWeight: 700,
+                      }}>
+                        {conf.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !forecast && !error && (
+          <div className="card glass-card" style={{ padding: '4rem', textAlign: 'center', border: '1px solid rgba(56,189,248,0.15)' }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>🌦️</div>
+            <h3 style={{ marginBottom: '0.5rem' }}>Select a District</h3>
+            <p style={{ margin: 0 }}>Choose a Karnataka district above to load the AI weather forecast.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

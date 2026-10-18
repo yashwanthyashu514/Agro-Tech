@@ -13,6 +13,7 @@ from fastapi import FastAPI
 # API prefix — mirrors backend/app/config.py so the plugin package
 # stays independent of the backend package at import time.
 API_PREFIX = "/api/v1"
+
 from plugin.base import BasePlugin
 
 logger = logging.getLogger(__name__)
